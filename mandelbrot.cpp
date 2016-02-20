@@ -21,8 +21,8 @@ Complex complex_square(Complex c);
 
 void setup()
 {
-	Width = 600;
-	Height = 600;
+	Width = 1000;
+	Height = 1000;
 	buff_bro = new_image_buffer(Width, Height);
 }
 
@@ -43,11 +43,11 @@ Color mandelbrot(int x, int y)
 {
 	Color color = {0};
 
-	Complex c = {((double)(x-Width/2))/100, ((double)(y-Height/2))/100};
+	Complex c = {((double)(x-Width/2+500+(st_i*30)))/(300+st_i*100), ((double)(y-Height/2))/(300+st_i*100)};
 
 	Complex prev_ans = c;
 
-	for(int i = 0; i < 20; ++i)
+	for(int i = 0; i < st_i; ++i)
 	{
 		Complex prev_ans_squared = complex_square(prev_ans);
 
@@ -58,7 +58,9 @@ Color mandelbrot(int x, int y)
 
 	double radius = sqrt(prev_ans.real*prev_ans.real + prev_ans.imaginary*prev_ans.imaginary);
 
-	if(radius > 2) color.b = 255; 
+	if(radius < 2) color.b = 255; 
+	else if (radius < 1000) color.r = 255;
+	else if (radius < 100000) color.g = 255;
 
 	return color;
 }
@@ -74,12 +76,12 @@ void draw()
 		for(int x = 0; x < Width; ++x)
 		{
 			Color color = mandelbrot(x,y);
-
-			*pixel++ = color.b | color.g << 8 | color.r << 16;
+			*pixel++ = color.b | color.g << 9 | color.r << 18;
 		}
 	}
 	
 	render_image(&buff_bro);
 }
+
 
 // void end(){}

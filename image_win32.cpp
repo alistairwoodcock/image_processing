@@ -167,6 +167,7 @@ static int Height = 0;
 int CALLBACK WinMain(HINSTANCE Instance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	
+	setup();
 	if(!Width) Width = 600;
 	if(!Height) Height = 600; 
 
@@ -202,7 +203,6 @@ int CALLBACK WinMain(HINSTANCE Instance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		Win32ResizeDIBSection(&stage, dimension.Width, dimension.Height);
 
 		//calls instruction.setup
-		setup();
 
 		bool draw_once = true;
 		while(GlobalRunning)
@@ -226,7 +226,7 @@ int CALLBACK WinMain(HINSTANCE Instance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 				{
 					draw();
 					// draw_once = false;
-					// Sleep(100);
+					// Sleep(17);
 				}
 
 				HDC DeviceContext = GetDC(Window);
