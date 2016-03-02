@@ -4,6 +4,8 @@
 void setup();
 void draw();
 #include "image_win32.cpp"
+#include <math.h>
+
 
 struct Color {
 	unsigned char r;

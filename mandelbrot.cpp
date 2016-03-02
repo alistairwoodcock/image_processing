@@ -1,4 +1,3 @@
-#include <math.h>
 #include "drawing.h"
 
 struct complex_pixel {
@@ -43,7 +42,7 @@ Color mandelbrot(int x, int y)
 {
 	Color color = {0};
 
-	Complex c = {((double)(x-Width/2+500+(st_i*30)))/(300+st_i*100), ((double)(y-Height/2))/(300+st_i*100)};
+	/* Complex c = {((double)(x-Width/2+500+(st_i*30)))/(300+st_i*100), ((double)(y-Height/2))/(300+st_i*100)};
 
 	Complex prev_ans = c;
 
@@ -54,13 +53,26 @@ Color mandelbrot(int x, int y)
 		prev_ans.real = prev_ans_squared.real + c.real;
 		prev_ans.imaginary = prev_ans_squared.imaginary + c.imaginary;
 
+	} */
+
+	Complex c = {((double)(x-Width/2 - 200))/(300), ((double)(y-Height/2))/(300)};
+
+	Complex prev_ans = c;
+
+	for(int i = 0; i < 14; ++i)
+	{
+		Complex prev_ans_squared = complex_square(prev_ans);
+
+		prev_ans.real = prev_ans_squared.real + c.real;
+		prev_ans.imaginary = prev_ans_squared.imaginary + c.imaginary;
+
 	}
 
 	double radius = sqrt(prev_ans.real*prev_ans.real + prev_ans.imaginary*prev_ans.imaginary);
 
-	if(radius < 2) color.b = 255; 
-	else if (radius < 1000) color.r = 255;
-	else if (radius < 100000) color.g = 255;
+	if(radius < 1) color.b = 255; 
+	else if (radius < 1.7) color.r = 255;
+	else if (radius < 2) color.g = 255;
 
 	return color;
 }
