@@ -21,7 +21,6 @@ struct win32_window_dimension
 {
 	int Width;
 	int Height;
-	
 };
 
 ImageBuffer stage;
@@ -163,13 +162,15 @@ LRESULT CALLBACK MainWindowCallback(HWND Window, UINT Message, WPARAM WParam, LP
 
 static int Width = 0;
 static int Height = 0;
+static bool draw_once = false;
 
 int CALLBACK WinMain(HINSTANCE Instance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	
-	setup();
 	if(!Width) Width = 600;
 	if(!Height) Height = 600; 
+	bool has_drawn = false;
+	
+	setup();
 
 
 	WNDCLASS WindowClass = {};
@@ -204,7 +205,7 @@ int CALLBACK WinMain(HINSTANCE Instance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 		//calls instruction.setup
 
-		bool draw_once = true;
+		
 		while(GlobalRunning)
 		{
 			if(Window)
@@ -222,11 +223,14 @@ int CALLBACK WinMain(HINSTANCE Instance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 					DispatchMessage(&Message);
 				}
 
-				if(draw_once)
+				if(draw_once && !has_drawn)
 				{
 					draw();
-					// draw_once = false;
-					// Sleep(17);
+					has_drawn = true;
+				}
+				else if(!draw_once)
+				{
+					draw();
 				}
 
 				HDC DeviceContext = GetDC(Window);

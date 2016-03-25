@@ -20,9 +20,10 @@ Complex complex_square(Complex c);
 
 void setup()
 {
-	Width = 1000;
-	Height = 1000;
+	Width = 700;
+	Height = 700; // Bugs life resolution
 	buff_bro = new_image_buffer(Width, Height);
+	// draw_once = true;
 }
 
 
@@ -42,7 +43,7 @@ Color mandelbrot(int x, int y)
 {
 	Color color = {0};
 
-	/* Complex c = {((double)(x-Width/2+500+(st_i*30)))/(300+st_i*100), ((double)(y-Height/2))/(300+st_i*100)};
+	 Complex c = {((double)(x-Width/2)-100)/(300), ((double)(y-Height/2))/(300)};
 
 	Complex prev_ans = c;
 
@@ -53,26 +54,13 @@ Color mandelbrot(int x, int y)
 		prev_ans.real = prev_ans_squared.real + c.real;
 		prev_ans.imaginary = prev_ans_squared.imaginary + c.imaginary;
 
-	} */
-
-	Complex c = {((double)(x-Width/2 - 200))/(300), ((double)(y-Height/2))/(300)};
-
-	Complex prev_ans = c;
-
-	for(int i = 0; i < 14; ++i)
-	{
-		Complex prev_ans_squared = complex_square(prev_ans);
-
-		prev_ans.real = prev_ans_squared.real + c.real;
-		prev_ans.imaginary = prev_ans_squared.imaginary + c.imaginary;
-
-	}
+	} 
 
 	double radius = sqrt(prev_ans.real*prev_ans.real + prev_ans.imaginary*prev_ans.imaginary);
 
-	if(radius < 1) color.b = 255; 
-	else if (radius < 1.7) color.r = 255;
-	else if (radius < 2) color.g = 255;
+	if(radius < 100) color.b = 255; 
+	// else if (radius < 1.7) color.r = 255;
+	// else if (radius < 2) color.g = 255;
 
 	return color;
 }
