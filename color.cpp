@@ -19,11 +19,16 @@ void draw(){
 	//line(300,20,i,200, c1);
 	// line(300,300,300,600-i, c1);
 	// set_pixel(&buff, 100, 100, c1);
-	empty_triangle(&buff, 100+i,100,50,150-i,150-i,150,255,0,0);
+	filled_triangle(&buff, 100+i,100,50,150-i,150-i,150,255,0,0);
+	
+	
 	// // render_image(&buff, j);
-
+	empty_triangle(&buff, 100+i,100,50,150-i,150-i,150,0,255,0);
 	i+=2;
-	write_log("%d", i);
+	// write_log("%d", i);
+
+	filled_triangle(&buff, 300+i,400,250,50+i,650-i,350,255,0,0);
+	empty_triangle(&buff, 300+i,400,250,50+i,650-i,350,0,255,0);
 
 	// if(i >= Height) 
 	// {
@@ -32,5 +37,5 @@ void draw(){
 	// }
 
 	Sleep(100);
-	render_image(&buff);
+	draw_image(&buff);
 }
