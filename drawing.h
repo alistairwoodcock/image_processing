@@ -34,6 +34,40 @@ void clear_image(ImageBuffer* img)
 	}
 }
 
+void flip_image_horizontal(ImageBuffer* img)
+{
+	unsigned int flipPixel = 0;
+	
+	for(int y = 0; y < img->Height; ++y)
+	{
+		for(int x = 0; x < img->Width/2; ++x)
+		{
+			unsigned int* leftPixel = (unsigned int*)img->Memory+x;
+			unsigned int* rightPixel = (unsigned int*)img->Memory+(img->Width)-x;
+
+			flipPixel = *leftPixel;
+			*leftPixel = *rightPixel;
+			*rightPixel = flipPixel;
+		}
+	}
+}
+
+void flip_image_vertical(ImageBuffer* img)
+{
+	// for(int x = 0; X < img->Width; ++x)
+	// {
+	// 	for(int y = 0; y < img->Height/2; ++y)
+	// 	{
+	// 		unsigned int* topPixel = (unsigned int*)img->Memory+(y*img->Width);
+	// 		unsigned int* botPixel = (unsigned int*)img->Memory+(img->Height)-y;
+
+	// 		flipPixel = *leftPixel;
+	// 		*leftPixel = *rightPixel;
+	// 		*rightPixel = flipPixel;
+	// 	}
+	// }
+}
+
 void draw_image(ImageBuffer* Image, int x = 0, int y = 0)
 {
 	ImageBuffer* Background = &stage;
@@ -157,6 +191,23 @@ int inline sign(int x)
 	return (x == 0) ? 0 : ((x < 0) ? -1 : 1);
 }
 
+int inline sign (int x0, int y0, int x1, int y1, int x2, int y2)
+{
+	return (x0 - x2) * (y1 - y2) - (x1 - x2) * (y0 - y2);
+}
+
+bool in_triangle (int x, int y, int x0, int y0, int x1, int y1, int x2, int y2)
+{
+    int D = (y1-y2)*(x0-x2) + (x2-x1)*(y0-y2);
+    int s = (y1-y2)*(x-x2)+ (x2-x1)*(y-y2);
+    int t = (y2-y0)*(x-x2)+ (x0-x2)*(y-y2);
+
+    if (D < 0) 
+    	return s<=0 && t<=0 && s+t>=D;
+    
+    return s>=0 && t>=0 && s+t<=D;
+}
+
 
 void filled_triangle(ImageBuffer* img, int x0, int y0, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b)
 {
@@ -176,16 +227,6 @@ void filled_triangle(ImageBuffer* img, int x0, int y0, int x1, int y1, int x2, i
 		swap(x1, x2);
 	}
 
-	int y3 = 0;
-	if(x0 == x2)
-	{
-		y3 = x0;
-	}
-	else
-	{
-		y3 = y2 + ((x1-x2)/(x0-x2))*(y0-y2);
-	}
-
 	int min_y = y0;
 	int max_y = y0;
 
@@ -195,30 +236,17 @@ void filled_triangle(ImageBuffer* img, int x0, int y0, int x1, int y1, int x2, i
 	if(max_y < y1) max_y = y1;
 	if(max_y < y2) max_y = y2;
 
-	bool flipped_triangle = (sign((y1 - y3)) == -1);
 
-	for(int x = x0; x < x2; ++x)
+	for(int x = x0; x <= x2; ++x)
 	{
-		for(int y = min_y; y < max_y; ++y)
+		for(int y = min_y; y <= max_y; ++y)
 		{
-			char inside = sign((x2 - x0) * (y - y0) - (y2 - y0) * (x - x0));
-
-			if(inside == 1 && flipped_triangle) break;
-
-			inside += sign((x0 - x1) * (y - y1) - (y0 - y1) * (x - x1))
-				   + sign((x1 - x2) * (y - y2) - (y1 - y2) * (x - x2));
-					
-			if(inside == -3)
-			{
-				set_pixel(img, x, y, r, g, b);
-			}
-			else if(inside == 3)
+			if(in_triangle(x,y,x0,y0,x1,y1,x2,y2))
 			{
 				set_pixel(img, x, y, r, g, b);
 			}
 		}
 	}
-
 }
 
 void empty_triangle(ImageBuffer* img,int x0, int y0, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b)

@@ -3,7 +3,7 @@ if not defined DevEnvDir (
     call "c:/Program Files (x86)/Microsoft Visual Studio 12.0/VC/vcvarsall.bat"
 )
 
-cl %1.cpp gdi32.lib user32.lib Kernel32.lib
+cl %1.cpp tgaimage.cpp model.cpp gdi32.lib user32.lib Kernel32.lib
 
 
 IF ERRORLEVEL 1 goto DIE
