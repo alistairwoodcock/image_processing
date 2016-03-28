@@ -77,14 +77,9 @@ void draw_image(ImageBuffer* Image, int x = 0, int y = 0)
 
 void inline set_pixel(ImageBuffer* img, int x, int y, unsigned char r, unsigned char g, unsigned char b)
 {
-	if(x >= img->Width) return;
-	if(y >= img->Height) return;
-	if(x < 0) return;
-	if(y < 0) return;
-	
-	unsigned int* pixel = (unsigned int*)img->Memory;
+	if(x >= img->Width || y >= img->Height || x < 0 || y < 0) return;
 
-	*(pixel+x+(y*img->Width)) = b | g << 8 | r << 16;
+	*(((unsigned int*)img->Memory)+x+(y*img->Width)) = b | g << 8 | r << 16;
 }
 
 void inline set_pixel(ImageBuffer* img, int x, int y, Color c)
@@ -150,22 +145,18 @@ void line(ImageBuffer* img, int x0, int y0, int x1, int y1, Color c)
 	line(img, x0,y0,x1,y1,c.r,c.g,c.b);
 }
 
-void swap(int& i, int& j)
+void inline swap(int& i, int& j)
 {
 	int temp = i;
 	i = j;
 	j = temp; 
 }
 
-int sign(int x)
+int inline sign(int x)
 {
 	return (x == 0) ? 0 : ((x < 0) ? -1 : 1);
 }
 
-int side_of_line(int x, int y, int x0, int y0, int x1, int y1)
-{
-	return sign((x0 - x1) * (y - y1) - (y0 - y1) * (x - x1));
-}
 
 void filled_triangle(ImageBuffer* img, int x0, int y0, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b)
 {
@@ -185,7 +176,15 @@ void filled_triangle(ImageBuffer* img, int x0, int y0, int x1, int y1, int x2, i
 		swap(x1, x2);
 	}
 
-	int y3 = y2 + ((x1-x2)/(x0-x2))*(y0-y2);
+	int y3 = 0;
+	if(x0 == x2)
+	{
+		y3 = x0;
+	}
+	else
+	{
+		y3 = y2 + ((x1-x2)/(x0-x2))*(y0-y2);
+	}
 
 	int min_y = y0;
 	int max_y = y0;
@@ -204,8 +203,7 @@ void filled_triangle(ImageBuffer* img, int x0, int y0, int x1, int y1, int x2, i
 		{
 			char inside = sign((x2 - x0) * (y - y0) - (y2 - y0) * (x - x0));
 
-			if(inside == 1 && flipped_triangle)
-				break;
+			if(inside == 1 && flipped_triangle) break;
 
 			inside += sign((x0 - x1) * (y - y1) - (y0 - y1) * (x - x1))
 				   + sign((x1 - x2) * (y - y2) - (y1 - y2) * (x - x2));
